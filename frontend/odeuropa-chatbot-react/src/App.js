@@ -4,7 +4,6 @@ import './App.css';
 function App() {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [sources, setSources] = useState([]);
 
   const sendMessage = async () => {
 
@@ -29,9 +28,8 @@ function App() {
         const data = await response.json();
         const newMessage = { from: 'user', text: userMessage };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-        const newReply = { from: 'bot', text: data.answer };
+        const newReply = { from: 'bot', text: data.answer, sources: data.sources };
         setMessages((prevMessages) => [...prevMessages, newReply]);
-        setSources(data.sources);
        
       } else {
         console.error('Failed to get response from server:', response.statusText);
@@ -65,7 +63,7 @@ function App() {
             {message.text}
             {message.from === 'bot' && <div style={{margin: '10px'}}/>}
             {message.from === 'bot' && (
-              sources.map((source, index) => (
+              message.sources.map((source, index) => (
                 <div key={index}>
                   Source {index + 1}:&nbsp;
                   <a href={source} target="_blank" rel="noopener noreferrer">
